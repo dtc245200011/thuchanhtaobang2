@@ -5,44 +5,39 @@ USE QuanLyDiemThi;
 
 -- Bảng HocSinh
 CREATE TABLE HocSinh (
-    MaHS INT PRIMARY KEY,
+    MaHS VARCHAR(20) PRIMARY KEY,
     HoTen VARCHAR(100) NOT NULL,
-    NgaySinh DATE,
-    DiaChi VARCHAR(200)
-);
-
--- Bảng MonHoc
-CREATE TABLE MonHoc (
-    MaMH INT PRIMARY KEY,
-    TenMH VARCHAR(100) NOT NULL,
-    SoTinChi INT
+    NgaySinh DATETIME NOT NULL,
+    Lop VARCHAR(20) NOT NULL,
+    GT VARCHAR(10) NOT NULL
 );
 
 -- Bảng GiaoVien
 CREATE TABLE GiaoVien (
-    MaGV INT PRIMARY KEY,
+    MaGV VARCHAR(20) PRIMARY KEY,
     HoTenGV VARCHAR(100) NOT NULL,
-    BoMon VARCHAR(100)
+    SDT VARCHAR(15) NOT NULL
 );
 
--- Bảng BangDiem (khóa chính kép + khóa ngoại)
-CREATE TABLE BangDiem (
-    MaHS INT,
-    MaMH INT,
-    DiemThi DECIMAL(4,2),
-    MaGV INT,
-    PRIMARY KEY (MaHS, MaMH),
-    FOREIGN KEY (MaHS) REFERENCES HocSinh(MaHS),
-    FOREIGN KEY (MaMH) REFERENCES MonHoc(MaMH),
+-- Bảng MonHoc
+CREATE TABLE MonHoc (
+    MaMH VARCHAR(50) PRIMARY KEY,
+    TenMH VARCHAR(100) NOT NULL,
+    MaGV VARCHAR(20) NOT NULL,
     FOREIGN KEY (MaGV) REFERENCES GiaoVien(MaGV)
 );
 
--- Ví dụ thêm khóa ngoại bằng ALTER TABLE
-ALTER TABLE BangDiem
-ADD CONSTRAINT fk_bangdiem_monhoc FOREIGN KEY (MaMH) REFERENCES MonHoc(MaMH);
+-- Bảng BangDiem
+CREATE TABLE BangDiem (
+    MaHS VARCHAR(20),
+    MaMH VARCHAR(50),
+    DiemThi INT NOT NULL,
+    NgayKT DATETIME NOT NULL,
+    PRIMARY KEY (MaHS, MaMH),
+    FOREIGN KEY (MaHS) REFERENCES HocSinh(MaHS),
+    FOREIGN KEY (MaMH) REFERENCES MonHoc(MaMH)
+);
 
-ALTER TABLE BangDiem
-ADD CONSTRAINT fk_bangdiem_hocsinh FOREIGN KEY (MaHS) REFERENCES HocSinh(MaHS);
-
-ALTER TABLE BangDiem
-ADD CONSTRAINT fk_bangdiem_giaovien FOREIGN KEY (MaGV) REFERENCES GiaoVien(MaGV);
+-- Bước 7: Thêm khóa ngoại cho MonHoc bằng ALTER TABLE
+ALTER TABLE MonHoc
+ADD CONSTRAINT fk_monhoc_giaovien FOREIGN KEY (MaGV) REFERENCES GiaoVien(MaGV);
